@@ -82,7 +82,7 @@ class ActionTest < Test::Unit::TestCase
         @call.expects(:read).with(io, 4, nil).returns("\000\000\000\003")
         @call.expects(:read).with(io, 3, nil).returns(nil)
         @call.expects(:connect_to).returns(io)
-         begin
+        begin
           @call.transaction("foo")
           fail "Should have thrown an error"
         rescue BERTRPC::ProtocolError => e
