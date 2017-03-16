@@ -26,9 +26,9 @@ module BERTRPC
     def read(sock, len, timeout)
       data, size = [], 0
       while size < len
-        r, w, e = IO.select([sock], [], [], timeout)
+        r, _, _ = IO.select([sock], [], [], timeout)
         raise Errno::EAGAIN if r.nil?
-        msg, sender = sock.recvfrom(len - size)
+        msg, _ = sock.recvfrom(len - size)
         raise Errno::ECONNRESET if msg.size == 0
         size += msg.size
         data << msg
