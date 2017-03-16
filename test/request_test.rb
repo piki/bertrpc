@@ -13,7 +13,6 @@ class RequestTest < Test::Unit::TestCase
 
   context "A Request instance" do
     setup do
-      svc = BERTRPC::Service.new('localhost', 9941)
       @req = BERTRPC::Request.new(@svc, :call, nil)
     end
 
