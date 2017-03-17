@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require 'socket'
+require 'bert'
+
+port = ARGV.any? ? ARGV.first.to_i : 8149
+
+server = TCPServer.new(port)
+while fd = server.accept do
+  pid = fork do
+    packet_size = fd.read(4).unpack("N").first
+    packet = fd.read(packet_size)
+    obj = BERT.decode(packet)
+    p obj
+    begin
+      response = case obj[2]
+        when :ping
+          BERT.encode(t[:reply, :pong])
+        when :echo
+          BERT.encode(t[:reply, obj[3]])
+        when :time
+          BERT.encode(t[:reply, Time.now])
+        when :sleep
+          sleep(obj[3])
+          BERT.encode(t[:reply, obj[3]])
+        else
+          BERT.encode(t[:error, [:server, 1, "class", "invalid function: #{obj[2]}", caller]])
+      end
+    rescue => e
+      response = BERT.encode(t[:error, [:server, 1, "class", e.message, e.backtrace]])
+    end
+    fd.print [response.size].pack("N")
+    fd.print response
+    fd.close
+  end
+  fd.close
+  Process.detach(pid)
+end

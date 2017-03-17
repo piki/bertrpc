@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'socket'
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'bertrpc'
+
+class Enc
+  include BERTRPC::Encodes
+end
+
+unless ARGV.length >= 3
+  puts "Usage:"
+  puts "  #{$0} host port function [args]"
+end
+host = ARGV.shift
+port = ARGV.shift
+func = ARGV.shift.to_sym
+args = ARGV.map do |s|
+  case s
+    when /^\d+$/
+      s.to_i
+    when /^\d*\.\d+$/
+      s.to_f
+    else
+      s
+  end
+end
+
+args = case
+  when args.empty?
+    [nil]
+  when args.size == 1
+    args
+  else
+    [args]
+end
+
+svc = BERTRPC::Service.new(host, port)
+enc = Enc.new
+req = svc.call
+call = BERTRPC::Action.new(svc, req, :mymod, func, *args)
+begin
+  resp = call.execute
+  p resp
+rescue => e
+  p e
+  puts e.backtrace
+  if e.original_exception && e.original_exception != e
+    puts "--- the wire ---"
+    puts e.original_exception.backtrace
+  end
+end
