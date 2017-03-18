@@ -25,6 +25,8 @@ while fd = server.accept do
           BERT.encode(t[:reply, obj[3]])
         when :time
           BERT.encode(t[:reply, Time.now])
+        when :rand
+          BERT.encode(t[:reply, rand])
         when :sleep
           sleep(obj[3])
           BERT.encode(t[:reply, obj[3]])
