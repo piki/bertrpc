@@ -3,8 +3,13 @@
 require 'socket'
 require 'bert'
 
-port = ARGV.any? ? ARGV.first.to_i : 8149
+unless ARGV.length == 1
+  puts "Usage:"
+  puts "  #{$0} port"
+  exit 1
+end
 
+port = ARGV.first.to_i
 server = TCPServer.new(port)
 while fd = server.accept do
   pid = fork do
