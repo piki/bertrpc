@@ -1,7 +1,7 @@
 BERTRPC
 =======
 
-This is a modified version of [bert-rpc.org](http://bert-rpc.org) for
+This is a modified version of [bertrpc](http://github.com/mojombo/bertrpc) for
 interview exercises.
 
 You need to have a version of Ruby `>= 2.2.2` to run this exercise.  You
