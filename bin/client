@@ -5,10 +5,6 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'bertrpc'
 
-class Enc
-  include BERTRPC::Encodes
-end
-
 unless ARGV.length >= 3
   puts "Usage:"
   puts "  #{$0} host port function [args]"
@@ -37,7 +33,6 @@ args = case
 end
 
 svc = BERTRPC::Service.new(host, port)
-enc = Enc.new
 req = svc.call
 call = BERTRPC::Action.new(svc, req, :mymod, func, *args)
 begin
