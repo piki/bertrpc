@@ -41,7 +41,7 @@ begin
 rescue => e
   p e
   puts e.backtrace
-  if e.original_exception && e.original_exception != e
+  if e.respond_to?(:original_exception) && e.original_exception && e.original_exception != e
     puts "--- the wire ---"
     puts e.original_exception.backtrace
   end
